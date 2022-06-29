@@ -1,9 +1,9 @@
 # Databricks/Alluxio Integration Demo
 
 ## Overview
-Expedia has integrated Alluxio support into our datalakes and into our query tools to allow efficient cached cross-region 
+Expedia has integrated Alluxio support into our datalakes and into our query tools to allow efficient cached cross-region
 querying of data stored in AWS S3 buckets.  For this demo, we will be showing how our Analytics datalake and platform
-can access data in the Hotels.com datalake in a different region. We do this transparently to the query engine, in this 
+can access data in the Hotels.com datalake in a different region. We do this transparently to the query engine, in this
 case Databricks, with the following methodology:
 
 1. Databricks is in AWS region `us-east-1`. Hotels.com datalake is in `us-west-2`.
@@ -27,7 +27,7 @@ case Databricks, with the following methodology:
     * Hive filter is configured [here](https://github.com/ExpediaGroup/apiary-waggledance-docker/blob/master/Dockerfile#L23).
 * [Apiary Federation](https://github.com/ExpediaGroup/apiary-federation): Open-source Terraform module to configure Waggledance via our Docker image.
    * Alluxio replacements are configured [here](https://github.com/ExpediaGroup/apiary-federation/blob/master/hive-site.tf).
-* [eg-tf-mod-alluxio](about:blank): Inner-source Terraform module to deploy an Alluxio cluster
+* `eg-tf-mod-alluxio`: Inner-source Terraform module to deploy an Alluxio cluster
   * List of S3 buckets for path replacement set in Terraform and mounted using AWS State Manager (Ansible playbook):
 ```yaml
   - name: script to mount s3 buckets
@@ -50,11 +50,11 @@ case Databricks, with the following methodology:
     become_user: hdfs
     ignore_errors: yes
 ```
-* [egdp-tf-app-egap-apiary Federation component](about:blank): Inner-source Terraform application used to configure Waggledance, Alluxio, and the federation layer for our Analytics Platform Data Lake.
+* `egdp-tf-app-egap-apiary Federation component`: Inner-source Terraform application used to configure Waggledance, Alluxio, and the federation layer for our Analytics Platform Data Lake.
   * List of cross-region S3 buckets to access via Alluxio specified as a Terraform variable.
   * Alluxio created/configured by using the `eg-tf-mod-alluxio` Terraform module and configuring it with the above list of buckets.
   * Waggledance instance created by using the `apiary-federation` Terraform module, which also configures the PathConversion Hive filter in Waggledance to use the same list of buckets.
-* [egdp-tf-app-egap-databricks](about:blank): Inner-source Terraform application to deploy Databricks to the EG Analytics Platform.
+* `egdp-tf-app-egap-databricks`: Inner-source Terraform application to deploy Databricks to the EG Analytics Platform.
   * Alluxio client jar configured in each Databricks cluster using code similar to:
 ```shell
 #!/bin/bash
@@ -62,4 +62,3 @@ case Databricks, with the following methodology:
 aws s3 cp "${TFVAR_ALLUXIO_CLIENT_PACKAGE}" "/databricks/jars/alluxio-${TFVAR_ALLUXIO_VERSION}-client.jar"
 
 ```
-  
